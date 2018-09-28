@@ -33,13 +33,17 @@ if __name__ == '__main__':
     train_data_df = load_data_from_csv(config.train_data_path, nrow=traing_num)
     validate_data_df = load_data_from_csv(config.validate_data_path, nrow=validate_num)
 
+    # get all train sentences
     content_train = train_data_df.iloc[:, 1]
 
     logger.info("start seg train data")
+    # segment sentences to words
     content_train = seg_words(content_train)
     logger.info("complete seg train data")
 
+    # get column names
     columns = train_data_df.columns.values.tolist()
+    logger.info(columns)
 
     logger.info("start train feature extraction")
     vectorizer_tfidf = TfidfVectorizer(analyzer='word', ngram_range=(1, 5), min_df=5, norm='l2')
@@ -52,6 +56,8 @@ if __name__ == '__main__':
     classifier_dict = dict()
     for column in columns[2:]:
         label_train = train_data_df[column]
+        logger.info("content train first %s" % content_train[0])
+        logger.info("label train first %s" % label_train[0])
         text_classifier = TextClassifier(vectorizer=vectorizer_tfidf)
         logger.info("start train %s model" % column)
         text_classifier.fit(content_train, label_train)
@@ -71,10 +77,14 @@ if __name__ == '__main__':
     f1_score_dict = dict()
     for column in columns[2:]:
         label_validate = validate_data_df[column]
+
+        # predict and save f1 score
         text_classifier = classifier_dict[column]
         f1_score = text_classifier.get_f1_score(content_validate, label_validate)
+
         f1_score_dict[column] = f1_score
 
+    # get overall f1 score
     f1_score = np.mean(list(f1_score_dict.values()))
     str_score = "\n"
     for column in columns[2:]:
