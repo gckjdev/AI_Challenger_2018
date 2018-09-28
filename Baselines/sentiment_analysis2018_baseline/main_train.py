@@ -27,8 +27,9 @@ if __name__ == '__main__':
 
     # load train data
     logger.info("start load data")
-    traing_num = 10000
-    validate_num = 1000
+    traing_num = 1000
+    validate_num = 100
+    validate_num = 100
     train_data_df = load_data_from_csv(config.train_data_path, nrow=traing_num)
     validate_data_df = load_data_from_csv(config.validate_data_path, nrow=validate_num)
 
