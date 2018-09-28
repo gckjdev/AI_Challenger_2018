@@ -33,6 +33,7 @@ if __name__ == '__main__':
     columns = test_data_df.columns.tolist()
     # seg words
     logger.info("start seg test data")
+    logger.info(test_data_df.iloc[1, :])
     content_test = test_data_df.iloc[:, 1]
     content_test = seg_words(content_test)
     logger.info("complete seg test data")
