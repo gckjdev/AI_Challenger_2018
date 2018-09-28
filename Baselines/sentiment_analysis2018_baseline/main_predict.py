@@ -23,7 +23,8 @@ if __name__ == '__main__':
 
     # load data
     logger.info("start load data")
-    test_data_df = load_data_from_csv(config.test_data_path)
+    test_num = 1000
+    test_data_df = load_data_from_csv(config.test_data_path, nrow=test_num)
 
     # load model
     logger.info("start load model")

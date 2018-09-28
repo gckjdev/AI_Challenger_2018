@@ -27,8 +27,10 @@ if __name__ == '__main__':
 
     # load train data
     logger.info("start load data")
-    train_data_df = load_data_from_csv(config.train_data_path)
-    validate_data_df = load_data_from_csv(config.validate_data_path)
+    traing_num = 10000
+    validate_num = 1000
+    train_data_df = load_data_from_csv(config.train_data_path, nrow=traing_num)
+    validate_data_df = load_data_from_csv(config.validate_data_path, nrow=validate_num)
 
     content_train = train_data_df.iloc[:, 1]
 

@@ -3,13 +3,16 @@
 
 import pandas as pd
 import jieba
+import logging
 
+logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] <%(processName)s> (%(threadName)s) %(message)s')
+logger = logging.getLogger(__name__)
 
 # 加载数据
-def load_data_from_csv(file_name, header=0, encoding="utf-8"):
-
-    data_df = pd.read_csv(file_name, header=header, encoding=encoding)
-
+def load_data_from_csv(file_name, header=0, encoding="utf-8", nrow=None):
+    logger.info("load csv " + file_name)
+    data_df = pd.read_csv(file_name, header=header, encoding=encoding, nrow=nrow)
+    logger.info("load csv data info " + data_df.info())
     return data_df
 
 
