@@ -11,8 +11,8 @@ logger = logging.getLogger(__name__)
 # 加载数据
 def load_data_from_csv(file_name, header=0, encoding="utf-8", nrow=None):
     logger.info("load csv " + file_name)
-    data_df = pd.read_csv(file_name, header=header, encoding=encoding, nrow=nrow)
-    logger.info("load csv data info " + data_df.info())
+    data_df = pd.read_csv(file_name, header=header, encoding=encoding, nrows=nrow)
+    logger.info("load csv data info " + str(data_df.info()))
     return data_df
 
 
