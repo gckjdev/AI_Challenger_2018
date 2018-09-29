@@ -10,3 +10,4 @@ test_data_predict_out_path = os.path.abspath('.') + "/output/out.csv" # "测试�
 
 user_dict_path = os.path.abspath('.') + "/userdict.txt"
 
+word2vec_path = os.path.abspath('.') + "/sgns.merge.char"

@@ -11,6 +11,7 @@ from sklearn.externals import joblib
 import os
 import argparse
 import jieba
+import read_word2vec
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] <%(processName)s> (%(threadName)s) %(message)s')
 logger = logging.getLogger(__name__)
@@ -26,6 +27,7 @@ if __name__ == '__main__':
     if not model_name:
         model_name = "model_dict.pkl"
 
+    read_word2vec.read_vectors(config.word2vec_path, 10000)
 
 
     # load train data
