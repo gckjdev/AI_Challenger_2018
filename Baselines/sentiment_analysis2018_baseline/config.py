@@ -8,4 +8,5 @@ validate_data_path = os.path.abspath('.') + "/validate/sentiment_analysis_valida
 test_data_path = os.path.abspath('.') + "/testa/sentiment_analysis_testa.csv" # "测试集文件存放路径"
 test_data_predict_out_path = os.path.abspath('.') + "/output/out.csv" # "测试集预测结果文件存放路径"
 
+user_dict_path = os.path.abspath('.') + "/userdict.txt"
 

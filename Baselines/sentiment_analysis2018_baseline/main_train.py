@@ -10,6 +10,7 @@ import numpy as np
 from sklearn.externals import joblib
 import os
 import argparse
+import jieba
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] <%(processName)s> (%(threadName)s) %(message)s')
 logger = logging.getLogger(__name__)
@@ -24,6 +25,8 @@ if __name__ == '__main__':
     model_name = args.model_name
     if not model_name:
         model_name = "model_dict.pkl"
+
+
 
     # load train data
     logger.info("start load data")
