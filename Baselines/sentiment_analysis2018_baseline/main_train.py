@@ -1,7 +1,7 @@
 #!/user/bin/env python
 # -*- coding:utf-8 -*-
 
-from data_process import load_data_from_csv, seg_words, get_embeding_weights
+from data_process import load_data_from_csv, seg_words, get_embeding_weights, sentences_to_indices
 from model import TextClassifier
 from sklearn.feature_extraction.text import TfidfVectorizer
 import config
@@ -31,10 +31,22 @@ if __name__ == '__main__':
 
 #    read_word2vec.read_vectors(config.word2vec_path, 10000)  # total 1292679
 
-    vocab = { u"你好" : 0, u"朋友" : 1, u"人" : 2 , u"年":3, u"一个":4}
-    embedding_matrix = get_embeding_weights(vocab, config.word2vec_path, 1000000)
-    print(vocab)
-    print(embedding_matrix)
+    contents = [u"人生就是这样子", u"人不可无志气", u"不可不要", u"美好的生活", u"人无完人", u"大众点评"]
+    m, w, v, s = sentences_to_indices(contents)
+    print("max len ", m)
+    print(w, v)
+    print(s)
+
+    a = np.array(s)
+    print("save ", a)
+    np.save("a.npy", a)
+    b = np.load("a.npy")
+    print("load ", b)
+
+    # vocab = v # { u"你好" : 0, u"朋友" : 1, u"人" : 2 , u"年":3, u"一个":4}
+    # embedding_matrix = get_embeding_weights(vocab, config.word2vec_path, 1000000)
+    # print(vocab)
+    # print(embedding_matrix)
 
     # load train data
     logger.info("start load data")
@@ -47,10 +59,20 @@ if __name__ == '__main__':
     # get all train sentences
     content_train = train_data_df.iloc[:, 1]
 
+    logger.info("start seg sentences to vector")
+    max_len, word, vocab, sequences = sentences_to_indices(content_train)
+    logger.info("vocab len %d" % len(vocab))
+    logger.info("word count %d" % len(word))
+    logger.info("max len %d" % max_len)
+    logger.info("sequence len %d" % len(sequences))
+
+    embedding_matrix = get_embeding_weights(vocab, config.word2vec_path, 1000000)
+    print(embedding_matrix)
+
     logger.info("start seg train data")
     # segment sentences to words
     content_train = seg_words(content_train)
-    logger.info("complete seg train data")
+    logger.info("complete seg train data")    
 
     # get column names
     columns = train_data_df.columns.values.tolist()

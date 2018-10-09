@@ -32,6 +32,32 @@ def seg_words(contents):
 
     return contents_segs
 
+
+# 分词并且生词词库及其索引
+def sentences_to_indices(contents):
+    max_len = 0
+    vocab = {}          # 词库 to 索引
+    index_word = []     # 索引 to 词
+    content_sequences = [] # 
+    index = 0;
+    for content in contents:
+        segs = jieba.lcut(content)
+
+        # update max len
+        if len(segs) > max_len:
+            max_len = len(segs)
+
+        seq = []
+        for seg in segs:
+            if seg not in vocab:
+                index_word.append(seg)
+                vocab[seg] = index
+                index += 1
+            seq.append(vocab[seg])
+        content_sequences.append(seq)
+
+    return max_len, index_word, vocab, content_sequences
+
 def get_embeding_weights(vocab, path, topn):
 
     # vocab={} # 词汇表为数据预处理后得到的词汇字典
@@ -62,9 +88,9 @@ def get_embeding_weights(vocab, path, topn):
             lines_num += 1
             tokens = line.rstrip().split(' ')           
             if vocab.__contains__(tokens[0]):
-                logger.info("find vector for word %s" % tokens[0])
+                # logger.info("find vector for word %s" % tokens[0])
                 vectors[tokens[0]] = np.asarray([float(x) for x in tokens[1:]])
-                iw.append(tokens[0])    # only add words in vocab
+                # iw.append(tokens[0])    # only add words in vocab
 
             if lines_num < 10:
 #                vocab[tokens[0]] = lines_num * 100               
@@ -79,10 +105,10 @@ def get_embeding_weights(vocab, path, topn):
                     print("all words are found, break")
                     break
 
-    for i, w in enumerate(iw):
-        wi[w] = i
+    # for i, w in enumerate(iw):
+    #    wi[w] = i
 
-    logger.info("Word2Vec loading.... total %s words read" % len(iw))
+    logger.info("Word2Vec loading.... total %d words read" % len(vectors))
 
     # return vectors, iw, wi, dim
 
@@ -95,7 +121,7 @@ def get_embeding_weights(vocab, path, topn):
         embedding_vector=vectors.get(word)
         ## 判断查询结果，如果查询结果不为空,用该向量替换0向量矩阵中下标为i的那个向量
         if embedding_vector is not None:
-            logger.info("find vector for word %s" % word)
+            # logger.info("find vector for word %s" % word)
             embedding_matrix[i]=embedding_vector
 
     return embedding_matrix
