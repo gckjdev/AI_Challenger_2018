@@ -1,7 +1,7 @@
 #!/user/bin/env python
 # -*- coding:utf-8 -*-
 
-from data_process import load_data_from_csv, seg_words
+from data_process import load_data_from_csv, seg_words, get_embeding_weights
 from model import TextClassifier
 from sklearn.feature_extraction.text import TfidfVectorizer
 import config
@@ -12,9 +12,11 @@ import os
 import argparse
 import jieba
 import read_word2vec
+import sys
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] <%(processName)s> (%(threadName)s) %(message)s')
 logger = logging.getLogger(__name__)
+
 
 if __name__ == '__main__':
 
@@ -27,8 +29,12 @@ if __name__ == '__main__':
     if not model_name:
         model_name = "model_dict.pkl"
 
-    read_word2vec.read_vectors(config.word2vec_path, 10000)
+#    read_word2vec.read_vectors(config.word2vec_path, 10000)  # total 1292679
 
+    vocab = { u"你好" : 0, u"朋友" : 1, u"人" : 2 , u"年":3, u"一个":4}
+    embedding_matrix = get_embeding_weights(vocab, config.word2vec_path, 1000000)
+    print(vocab)
+    print(embedding_matrix)
 
     # load train data
     logger.info("start load data")

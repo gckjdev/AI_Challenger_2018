@@ -22,8 +22,9 @@ class TextClassifier():
         return self.vectorizer.transform(x)
 
     def fit(self, x, y):
-
-        self.classifier.fit(self.features(x), y)
+        features = self.features(x)
+        logger.info("features shape = %s" % str(features.shape))
+        self.classifier.fit(features, y)
 
     def predict(self, x):
 
