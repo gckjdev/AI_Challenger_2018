@@ -1,7 +1,7 @@
 #!/user/bin/env python
 # -*- coding:utf-8 -*-
 
-from data_process import load_data_from_csv, seg_words, get_embeding_weights, sentences_to_indices
+from data_process import load_data_from_csv, seg_words, get_embeding_weights, sentences_to_indices, save_data, load_data
 from model import TextClassifier
 from sklearn.feature_extraction.text import TfidfVectorizer
 import config
@@ -66,7 +66,12 @@ if __name__ == '__main__':
     logger.info("max len %d" % max_len)
     logger.info("sequence len %d" % len(sequences))
 
+    save_data(vocab, "vocab.npy")
+    save_data(word, "word.npy")
+    save_data(sequences, "seq.npy")
+
     embedding_matrix = get_embeding_weights(vocab, config.word2vec_path, 1000000)
+    save_data(embedding_matrix, "emb.npy")
     print(embedding_matrix)
 
     logger.info("start seg train data")

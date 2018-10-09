@@ -92,9 +92,9 @@ def get_embeding_weights(vocab, path, topn):
                 vectors[tokens[0]] = np.asarray([float(x) for x in tokens[1:]])
                 # iw.append(tokens[0])    # only add words in vocab
 
-            if lines_num < 10:
-#                vocab[tokens[0]] = lines_num * 100               
-                print (tokens[0], vocab)
+#             if lines_num < 10:
+#                 vocab[tokens[0]] = lines_num * 100               
+#                 print (tokens[0], vocab)
 
             if topn > 0 and lines_num >= topn:
                 break
@@ -125,3 +125,11 @@ def get_embeding_weights(vocab, path, topn):
             embedding_matrix[i]=embedding_vector
 
     return embedding_matrix
+
+def save_data(data, name):
+    logger.info("save %s", name)
+    np.save(name, np.array(data))
+
+def load_data(name):
+    logger.info("load %s", name)
+    return np.load(name)
