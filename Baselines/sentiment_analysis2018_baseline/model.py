@@ -83,8 +83,12 @@ def predictRNNModel(model, content_test, label_test):
     # logger.info("predict score is %s" % score)
     # print(score)
     Y_pred = model.predict(X_test, batch_size=64, verbose=1)
-    score1 = accuracy_score(label_test, Y_pred)
-    score2 = f1_score(label_test, Y_pred)
+    
+    print(Y_pred)
+    print(label_test)
+    
+    score1 = accuracy_score(label_test.tolist(), Y_pred.tolist())
+    score2 = f1_score(label_test.tolist(), Y_pred.tolist())
     logger.info("acc : %s, f1 : %s" % score1, score2)
     return score1, score2
 

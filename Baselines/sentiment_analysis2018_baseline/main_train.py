@@ -74,7 +74,7 @@ if __name__ == '__main__':
     # load train data
     logger.info("start load data")
     traing_num = 1000 if is_test else None
-    validate_num = 2000 if is_test else None
+    validate_num = 100 if is_test else None
     train_data_df = load_data_from_csv(config.train_data_path, nrow=traing_num)
     validate_data_df = load_data_from_csv(config.validate_data_path, nrow=validate_num)
 
