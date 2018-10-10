@@ -75,6 +75,7 @@ def trainRNNModel(model, content, label):
 
 def predictRNNModel(model, content_test, label_test):
     logger.info("start to predict....")
-    score = model.evaluate(content_test, label_test, batch_size = 64)
+    X_test = pad_sequences(content_test, dtype='float32')
+    score = model.evaluate(X_test, label_test, batch_size = 64)
     logger.info("predict score is %d" % score)
     return score

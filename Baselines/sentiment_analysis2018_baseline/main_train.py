@@ -13,6 +13,7 @@ import argparse
 import jieba
 import read_word2vec
 import sys
+import data_process
 from keras.utils import np_utils
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] <%(processName)s> (%(threadName)s) %(message)s')
@@ -65,7 +66,7 @@ if __name__ == '__main__':
     # b = np.load("a.npy")
     # print("load ", b)
 
-    # vocab = v # { u"你好" : 0, u"朋友" : 1, u"人" : 2 , u"年":3, u"一个":4}
+    # vocab = { u"你好" : 0, u"朋友" : 1, u"人" : 2 , u"年":3, u"一个":4}
     # embedding_matrix = get_embeding_weights(vocab, config.word2vec_path, 1000000)
     # print(vocab)
     # print(embedding_matrix)
@@ -87,7 +88,7 @@ if __name__ == '__main__':
         save_data(word, "word.npy")
         save_data(sequences, "seq.npy")
 
-    max_len = 1317
+    max_len = 100000 # TODO to be changed
     word = load_data("word.npy").tolist()
     vocab = load_data("vocab.npy").tolist()
     sequences = load_data("seq.npy").tolist()
@@ -102,6 +103,7 @@ if __name__ == '__main__':
         save_data(embedding_matrix, "emb.npy")
     embedding_matrix = load_data("emb.npy")
     print(embedding_matrix[0])
+    print(embedding_matrix[1])    
 
     logger.info("start seg train data")
     # segment sentences to words
@@ -119,7 +121,7 @@ if __name__ == '__main__':
         label_train = np_utils.to_categorical(train_data_df[column], num_classes=3)
         content_train = sequences
 
-        model = buildRNNModel(len(vocab) + 1, embedding_matrix)
+        model = buildRNNModel(data_process.VOCAB_NUMBER, embedding_matrix)
         model = trainRNNModel(model, content_train, label_train)
         rnn_model_dict[column] = model
 
@@ -141,6 +143,9 @@ if __name__ == '__main__':
         text_classifier.fit(content_train, label_train)
         logger.info("complete train %s model" % column)
         classifier_dict[column] = text_classifier
+        if is_test:
+            logger.info("test, only run once")
+            break
 
     logger.info("complete train model")
 
