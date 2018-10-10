@@ -35,6 +35,9 @@ if __name__ == '__main__':
     parser.add_argument('-t', '--test', type=int, nargs='?',
                         help='test mode or not')
 
+     parser.add_argument('-e', '--epochs', type=int, nargs='?',
+                        help='train epochs')                       
+
     args = parser.parse_args()
     model_name = args.model_name
     if not model_name:
@@ -57,6 +60,10 @@ if __name__ == '__main__':
         is_test = True
     else:
         is_test = False if args.test == 0 else True
+
+    epochs = args.epochs
+    if epochs is None:
+        epochs = 3
 
     logger.info("test mode is %s" % is_test)
     logger.info("load cache is %s" % load_cache)
