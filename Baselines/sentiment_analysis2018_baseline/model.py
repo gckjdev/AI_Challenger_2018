@@ -15,6 +15,8 @@ from keras.layers.embeddings import Embedding
 from keras.layers.recurrent import LSTM, GRU
 from keras.preprocessing.sequence import pad_sequences
 
+from sklearn.metrics import accuracy_score,f1_score,roc_auc_score,recall_score,precision_score
+
 logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] <%(processName)s> (%(threadName)s) %(message)s')
 logger = logging.getLogger(__name__)
 
@@ -80,9 +82,11 @@ def predictRNNModel(model, content_test, label_test):
     # score = model.evaluate(X_test, label_test, batch_size = 64)
     # logger.info("predict score is %s" % score)
     # print(score)
-    Y_test = model.predict(X_test, batch_size=64, verbose=1)
-    score = np_utils.accuracy(Y_test, label_test)
-    return score
+    Y_pred = model.predict(X_test, batch_size=64, verbose=1)
+    score1 = accuracy_score(label_test, Y_pred)
+    score2 = f1_score(label_test, Y_pred)
+    logger.info("acc : %s, f1 : %s" % score1, score2)
+    return score1, score2
 
 def load_rnn_model(model, name):
     logger.info("load model weights %s" % name)
