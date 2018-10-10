@@ -25,24 +25,28 @@ if __name__ == '__main__':
     parser.add_argument('-mn', '--model_name', type=str, nargs='?',
                         help='the name of model')
 
-    parser.add_argument('-lc', '--load_cache', type=bool, nargs='?',
+    parser.add_argument('-lc', '--load_cache', type=int, nargs='?',
                         help='load cache or not')
 
-    parser.add_argument('-t', '--test', type=bool, nargs='?',
-                        help='load cache or not')
+    parser.add_argument('-t', '--test', type=int, nargs='?',
+                        help='test mode or not')
 
     args = parser.parse_args()
     model_name = args.model_name
     if not model_name:
         model_name = "model_dict.pkl"
 
-    load_cache = args.load_cache
+    load_cache = True
     if args.load_cache is None:
         load_cache = True
+    else:
+        load_cache = False if args.load_cache == 0 else True
 
-    is_test = args.test
+    is_test = True
     if args.test is None:
-        test = True
+        is_test = True
+    else:
+        is_test = False if args.test == 0 else True
 
     logger.info("test mode is %s" % is_test)
     logger.info("load cache is %s" % load_cache)
