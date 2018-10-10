@@ -80,6 +80,8 @@ if __name__ == '__main__':
 
     # get all train sentences
     content_train = train_data_df.iloc[:, 1]
+    logger.info(content_train[0])
+    logger.info(content_train[1])
 
     logger.info("start seg sentences to vector")
     if not load_cache:
@@ -121,6 +123,9 @@ if __name__ == '__main__':
     for column in columns[2:]:   # 逐列遍历每一个训练的标注 label
         
         label_train = np_utils.to_categorical(train_data_df[column], num_classes=NUM_CLASS)
+        logger.info(label_train[0])
+        logger.info(label_train[1])
+
         content_train = sequences
 
         model = buildRNNModel(data_process.VOCAB_NUMBER, embedding_matrix)
@@ -140,12 +145,17 @@ if __name__ == '__main__':
 
     logger.info("start RNN validate data")
     content_validate = data_process.sentences_to_sequence(content_validate, vocab)
+    print(validate_data_df.iloc[:, 1][0])
+    print(validate_data_df.iloc[:, 1][1])
     print(content_validate[0])
     print(content_validate[1])
+
 
     logger.info("start RNN validate model")
     for column in columns[2:]:
         label_validate = np_utils.to_categorical(validate_data_df[column], num_classes = NUM_CLASS)
+        logger.info(label_validate[0])
+        logger.info(label_validate[1])
         score = predictRNNModel(rnn_model_dict[column], content_validate, label_validate)
         if is_test:
             break
