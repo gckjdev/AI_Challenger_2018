@@ -125,11 +125,11 @@ if __name__ == '__main__':
 
         model = buildRNNModel(data_process.VOCAB_NUMBER, embedding_matrix)
 
-        name = column + ".h5"
+        weights_name = column + ".h5"
         if is_test:
-            model = load_rnn_model(name)
+            model = load_rnn_model(model, weights_name)
         else:
-            model = trainRNNModel(model, content_train, label_train, name)
+            model = trainRNNModel(model, content_train, label_train, weights_name)
 
         rnn_model_dict[column] = model
         if is_test:

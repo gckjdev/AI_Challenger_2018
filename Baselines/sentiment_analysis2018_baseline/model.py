@@ -71,7 +71,7 @@ def trainRNNModel(model, content, label, name):
     model.save_weights(name)
     yaml_string = model.to_yaml()
     logger.info(yaml_string)
-    logger.info("save model to %s" % name)
+    logger.info("save model weights %s" % name)
     return model
 
 def predictRNNModel(model, content_test, label_test):
@@ -81,6 +81,6 @@ def predictRNNModel(model, content_test, label_test):
     logger.info("predict score is %d" % score)
     return score
 
-def load_rnn_model(name):
-    logger.info("load model %s" % name)
-    return load_model(name)
+def load_rnn_model(model, name):
+    logger.info("load model weights %s" % name)
+    return model.load_weights(name)
