@@ -137,7 +137,7 @@ if __name__ == '__main__':
 
         content_train = sequences
 
-        model = buildRNNModel(data_process.VOCAB_NUMBER, embedding_matrix)
+        model = buildRNNModel(data_process.VOCAB_NUMBER, embedding_matrix, NUM_CLASS)
 
         weights_name = column + ".h5"
         if is_load_model:
