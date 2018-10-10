@@ -38,6 +38,8 @@ def seg_words(contents):
 
     return contents_segs
 
+def convert_label_to_index(labels):
+    return [labels + 3]
 
 # 分词并且生词词库及其索引
 def sentences_to_indices(contents):

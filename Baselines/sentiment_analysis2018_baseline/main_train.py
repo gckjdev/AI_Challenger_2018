@@ -2,6 +2,7 @@
 # -*- coding:utf-8 -*-
 
 from data_process import load_data_from_csv, seg_words, get_embeding_weights, sentences_to_indices, save_data, load_data
+from data_process import convert_label_to_index, convert_index_to_label
 from model import TextClassifier, buildRNNModel, trainRNNModel, predictRNNModel, load_rnn_model
 from sklearn.feature_extraction.text import TfidfVectorizer
 import config
