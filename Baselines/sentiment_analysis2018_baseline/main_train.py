@@ -44,6 +44,9 @@ if __name__ == '__main__':
     if args.test is None:
         test = True
 
+    logger.info("test mode is %s" % is_test)
+    logger.info("load cache is %s" % load_cache)
+
 #    read_word2vec.read_vectors(config.word2vec_path, 10000)  # total 1292679
 
     # contents = [u"人生就是这样子", u"人不可无志气", u"不可不要", u"美好的生活", u"人无完人", u"大众点评"]
