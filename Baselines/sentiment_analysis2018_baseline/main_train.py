@@ -2,7 +2,7 @@
 # -*- coding:utf-8 -*-
 
 from data_process import load_data_from_csv, seg_words, get_embeding_weights, sentences_to_indices, save_data, load_data
-from model import TextClassifier, buildRNNModel, trainRNNModel, predictRNNModel
+from model import TextClassifier, buildRNNModel, trainRNNModel, predictRNNModel, load_rnn_model
 from sklearn.feature_extraction.text import TfidfVectorizer
 import config
 import logging
@@ -126,18 +126,14 @@ if __name__ == '__main__':
         model = buildRNNModel(data_process.VOCAB_NUMBER, embedding_matrix)
 
         name = column + ".h5"
-        model = trainRNNModel(model, content_train, label_train, name)
-        rnn_model_dict[column] = model
+        if is_test:
+            model = load_rnn_model(name)
+        else:
+            model = trainRNNModel(model, content_train, label_train, name)
 
+        rnn_model_dict[column] = model
         if is_test:
             break
-
-    logger.info("start train feature extraction")
-    vectorizer_tfidf = TfidfVectorizer(analyzer='word', ngram_range=(1, 5), min_df=5, norm='l2')
-    vectorizer_tfidf.fit(content_train)
-    logger.info("complete train feature extraction models")
-    logger.info("vocab shape: %s" % np.shape(vectorizer_tfidf.vocabulary_.keys()))
-
 
     # use RNN model to validate
     content_validate = validate_data_df.iloc[:, 1]
@@ -153,6 +149,15 @@ if __name__ == '__main__':
         score = predictRNNModel(rnn_model_dict[column], content_validate, label_validate)
         if is_test:
             break
+
+    logger.info("start train feature extraction")
+    vectorizer_tfidf = TfidfVectorizer(analyzer='word', ngram_range=(1, 5), min_df=5, norm='l2')
+    vectorizer_tfidf.fit(content_train)
+    logger.info("complete train feature extraction models")
+    logger.info("vocab shape: %s" % np.shape(vectorizer_tfidf.vocabulary_.keys()))
+
+
+
 
     # model train
     logger.info("start train model")
