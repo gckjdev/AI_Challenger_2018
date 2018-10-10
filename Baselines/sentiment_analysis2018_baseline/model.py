@@ -49,7 +49,7 @@ class TextClassifier():
         return f1_score(y, self.predict(x), average='macro')
 
 
-def buildRNNModel(input_dim, embedding_weights):   # input dim in general is vocab len + 1
+def buildRNNModel(input_dim, embedding_weights, num_class):   # input dim in general is vocab len + 1
 
     output_dim = 300 
 
@@ -57,7 +57,7 @@ def buildRNNModel(input_dim, embedding_weights):   # input dim in general is voc
     model.add(Embedding(input_dim, output_dim, weights=[embedding_weights], trainable = False))
     model.add(LSTM(128))
     model.add(Dropout(0.5))
-    model.add(Dense(3))
+    model.add(Dense(num_class))
     model.add(Activation('softmax'))
 
     # model.layers[1].trainnable = False
