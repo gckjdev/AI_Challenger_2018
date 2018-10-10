@@ -127,7 +127,7 @@ if __name__ == '__main__':
 
         weights_name = column + ".h5"
         if is_test:
-            model = load_rnn_model(model, weights_name)
+            load_rnn_model(model, weights_name)
         else:
             trainRNNModel(model, content_train, label_train, weights_name)
 
