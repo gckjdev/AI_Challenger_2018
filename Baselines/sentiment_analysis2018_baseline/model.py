@@ -81,4 +81,5 @@ def predictRNNModel(model, content_test, label_test):
     return score
 
 def load_rnn_model(name):
+    logger.info("load model %s" % name)
     return load_model(name)
