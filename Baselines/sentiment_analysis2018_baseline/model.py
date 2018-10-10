@@ -80,18 +80,18 @@ def trainRNNModel(model, content, label, name):
 def predictRNNModel(model, content_test, label_test):
     logger.info("start to predict....")
     X_test = pad_sequences(content_test, dtype='float32')
-    # score = model.evaluate(X_test, label_test, batch_size = 64)
-    # logger.info("predict score is %s" % score)
-    # print(score)
-    Y_pred = model.predict(X_test, batch_size=64, verbose=1)
+    score = model.evaluate(X_test, label_test, batch_size = 64)
+    logger.info("predict score is %s" % score)
+    print(score)
+    # Y_pred = model.predict(X_test, batch_size=64, verbose=1)
     
-    print(Y_pred)
-    print(label_test)
+    # print(Y_pred)
+    # print(label_test)
     
-    score1 = accuracy_score(label_test.tolist(), Y_pred.tolist())
-    score2 = f1_score(label_test.tolist(), Y_pred.tolist())
-    logger.info("acc : %s, f1 : %s" % score1, score2)
-    return score1, score2
+    # score1 = accuracy_score(label_test.tolist(), Y_pred.tolist())
+    # score2 = f1_score(label_test.tolist(), Y_pred.tolist())
+    # logger.info("acc : %s, f1 : %s" % score1, score2)
+    return score
 
 def load_rnn_model(model, name):
     logger.info("load model weights %s" % name)
