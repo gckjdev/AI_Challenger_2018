@@ -67,10 +67,10 @@ def buildRNNModel(input_dim, embedding_weights, num_class):   # input dim in gen
 
     return model
 
-def trainRNNModel(model, content, label, name):
+def trainRNNModel(model, content, label, name, epochs):
     logger.info("start to train....")
     train = pad_sequences(content, dtype='float32')
-    model.fit(train, label, batch_size = 64, epochs = 3, verbose = 1)       # epochs to be optimized
+    model.fit(train, label, batch_size = 64, epochs = epochs, verbose = 1)       # epochs to be optimized
     model.save_weights(name)
     yaml_string = model.to_yaml()
     logger.info(yaml_string)

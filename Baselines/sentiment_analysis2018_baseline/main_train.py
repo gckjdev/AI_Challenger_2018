@@ -83,7 +83,7 @@ if __name__ == '__main__':
     # load train data
     logger.info("start load data")
     traing_num = 1000 if is_test else None
-    validate_num = 100 if is_test else None
+    validate_num = 1000 if is_test else None
     train_data_df = load_data_from_csv(config.train_data_path, nrow=traing_num)
     validate_data_df = load_data_from_csv(config.validate_data_path, nrow=validate_num)
 
@@ -143,7 +143,7 @@ if __name__ == '__main__':
         if is_load_model:
             load_rnn_model(model, weights_name)
         else:
-            trainRNNModel(model, content_train, label_train, weights_name)
+            trainRNNModel(model, content_train, label_train, weights_name, epochs)
 
         rnn_model_dict[column] = model
         if is_test:
