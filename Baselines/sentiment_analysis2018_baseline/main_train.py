@@ -140,7 +140,7 @@ if __name__ == '__main__':
     rnn_model_dict = dict()
     for column in columns[2:]:   # 逐列遍历每一个训练的标注 label
         
-        label_train = np_utils.to_categorical(train_data_df[column], num_classes=NUM_CLASS)
+        label_train = np_utils.to_categorical(convert_label_to_index(train_data_df[column]), num_classes=NUM_CLASS)
         logger.info(label_train[0])
         logger.info(label_train[1])
 
@@ -171,7 +171,7 @@ if __name__ == '__main__':
 
     logger.info("start RNN validate model")
     for column in columns[2:]:
-        label_validate = np_utils.to_categorical(validate_data_df[column], num_classes = NUM_CLASS)
+        label_validate = np_utils.to_categorical(convert_label_to_index(validate_data_df[column]), num_classes = NUM_CLASS)
         logger.info(label_validate[0])
         logger.info(label_validate[1])
         score = predictRNNModel(rnn_model_dict[column], content_validate, label_validate)
