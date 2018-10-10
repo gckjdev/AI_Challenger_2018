@@ -35,7 +35,7 @@ if __name__ == '__main__':
     parser.add_argument('-t', '--test', type=int, nargs='?',
                         help='test mode or not')
 
-     parser.add_argument('-e', '--epochs', type=int, nargs='?',
+    parser.add_argument('-e', '--epochs', type=int, nargs='?',
                         help='train epochs')                       
 
     args = parser.parse_args()
@@ -67,6 +67,7 @@ if __name__ == '__main__':
 
     logger.info("test mode is %s" % is_test)
     logger.info("load cache is %s" % load_cache)
+    logger.info("train epochs is %s" % epochs)
 
 #    read_word2vec.read_vectors(config.word2vec_path, 10000)  # total 1292679
 
