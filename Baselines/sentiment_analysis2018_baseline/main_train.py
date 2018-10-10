@@ -129,7 +129,7 @@ if __name__ == '__main__':
         if is_test:
             model = load_rnn_model(model, weights_name)
         else:
-            model = trainRNNModel(model, content_train, label_train, weights_name)
+            trainRNNModel(model, content_train, label_train, weights_name)
 
         rnn_model_dict[column] = model
         if is_test:
