@@ -10,6 +10,7 @@ import random
 import codecs
 import numpy as np
 
+
 logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] <%(processName)s> (%(threadName)s) %(message)s')
 logger = logging.getLogger(__name__)
 jieba.load_userdict(config.user_dict_path)
@@ -39,7 +40,7 @@ def sentences_to_indices(contents):
     vocab = {}          # 词库 to 索引
     index_word = []     # 索引 to 词
     content_sequences = [] # 
-    index = 0;
+    index = 1;
     for content in contents:
         segs = jieba.lcut(content)
 
@@ -54,7 +55,7 @@ def sentences_to_indices(contents):
                 vocab[seg] = index
                 index += 1
             seq.append(vocab[seg])
-        content_sequences.append(seq)
+        content_sequences.append(np.array(seq))
 
     return max_len, index_word, vocab, content_sequences
 
@@ -113,7 +114,7 @@ def get_embeding_weights(vocab, path, topn):
     # return vectors, iw, wi, dim
 
     # 构建词向量矩阵，预训练的词向量中没有出现的词用0向量表示
-    ## 创建一个0矩阵，这个向量矩阵的大小为（词汇表的长度+1，词向量维度）
+    ## 创建一个0矩阵，这个向量矩阵的大小为（词汇表的长度+1，词向量维度）, 0索引不使用
     embedding_matrix=np.zeros((len(vocab)+1, dim))
     ## 遍历词汇表中的每一项
     for word,i in vocab.items():

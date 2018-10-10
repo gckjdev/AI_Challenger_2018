@@ -6,6 +6,15 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.metrics import f1_score
 import logging
 
+from keras.preprocessing import sequence
+from keras.optimizers import SGD, RMSprop, Adagrad
+from keras.utils import np_utils
+from keras.models import Sequential
+from keras.layers.core import Dense, Dropout, Activation
+from keras.layers.embeddings import Embedding
+from keras.layers.recurrent import LSTM, GRU
+from keras.preprocessing.sequence import pad_sequences
+
 logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] <%(processName)s> (%(threadName)s) %(message)s')
 logger = logging.getLogger(__name__)
 
@@ -37,4 +46,34 @@ class TextClassifier():
         return f1_score(y, self.predict(x), average='macro')
 
 
+def buildRNNModel(input_dim, embedding_weights):   # input dim in general is vocab len + 1
 
+    output_dim = 300 
+
+    model = Sequential()
+    model.add(Embedding(input_dim, output_dim, weights=[embedding_weights]))
+    model.add(LSTM(128))
+    model.add(Dropout(0.5))
+    model.add(Dense(3))
+    model.add(Activation('softmax'))
+
+    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+
+    logger.info(model.summary())
+
+    return model
+
+def trainRNNModel(model, content, label):
+    logger.info("start to train....")
+    train = pad_sequences(content, dtype='float32')
+    model.fit(train, label, batch_size = 64, epochs = 10, verbose = 1)
+    model.save_weights('rnn.h5')
+    yaml_string = model.to_yaml()
+    logger.info(yaml_string)
+    return model
+
+def predictRNNModel(model, content_test, label_test):
+    logger.info("start to predict....")
+    score = model.evaluate(content_test, label_test, batch_size = 64)
+    logger.info("predict score is %d" % score)
+    return score

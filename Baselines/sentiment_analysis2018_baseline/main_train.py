@@ -2,7 +2,7 @@
 # -*- coding:utf-8 -*-
 
 from data_process import load_data_from_csv, seg_words, get_embeding_weights, sentences_to_indices, save_data, load_data
-from model import TextClassifier
+from model import TextClassifier, buildRNNModel, trainRNNModel, predictRNNModel
 from sklearn.feature_extraction.text import TfidfVectorizer
 import config
 import logging
@@ -13,6 +13,7 @@ import argparse
 import jieba
 import read_word2vec
 import sys
+from keras.utils import np_utils
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] <%(processName)s> (%(threadName)s) %(message)s')
 logger = logging.getLogger(__name__)
@@ -60,19 +61,25 @@ if __name__ == '__main__':
     content_train = train_data_df.iloc[:, 1]
 
     logger.info("start seg sentences to vector")
-    max_len, word, vocab, sequences = sentences_to_indices(content_train)
+    # max_len, word, vocab, sequences = sentences_to_indices(content_train)
+    # save_data(vocab, "vocab.npy")
+    # save_data(word, "word.npy")
+    # save_data(sequences, "seq.npy")
+
+    max_len = 1317
+    word = load_data("word.npy").tolist()
+    vocab = load_data("vocab.npy").tolist()
+    sequences = load_data("seq.npy").tolist()
+
     logger.info("vocab len %d" % len(vocab))
     logger.info("word count %d" % len(word))
     logger.info("max len %d" % max_len)
     logger.info("sequence len %d" % len(sequences))
 
-    save_data(vocab, "vocab.npy")
-    save_data(word, "word.npy")
-    save_data(sequences, "seq.npy")
-
-    embedding_matrix = get_embeding_weights(vocab, config.word2vec_path, 1000000)
-    save_data(embedding_matrix, "emb.npy")
-    print(embedding_matrix)
+    # embedding_matrix = get_embeding_weights(vocab, config.word2vec_path, 0)
+    # save_data(embedding_matrix, "emb.npy")
+    embedding_matrix = load_data("emb.npy")
+    print(embedding_matrix[0])
 
     logger.info("start seg train data")
     # segment sentences to words
@@ -83,6 +90,17 @@ if __name__ == '__main__':
     columns = train_data_df.columns.values.tolist()
     logger.info(columns)
 
+    # use RNN to train and predict
+    rnn_model_dict = dict()
+    for column in columns[2:]:   # 逐列遍历每一个训练的标注 label
+        
+        label_train = np_utils.to_categorical(train_data_df[column], num_classes=3)
+        content_train = sequences
+
+        model = buildRNNModel(len(vocab) + 1, embedding_matrix)
+        model = trainRNNModel(model, content_train, label_train)
+        rnn_model_dict[column] = model
+
     logger.info("start train feature extraction")
     vectorizer_tfidf = TfidfVectorizer(analyzer='word', ngram_range=(1, 5), min_df=5, norm='l2')
     vectorizer_tfidf.fit(content_train)
@@ -92,7 +110,7 @@ if __name__ == '__main__':
     # model train
     logger.info("start train model")
     classifier_dict = dict()
-    for column in columns[2:]:
+    for column in columns[2:]:   # 逐列遍历每一个训练的标注 label
         label_train = train_data_df[column]
         logger.info("content train first %s" % content_train[0])
         logger.info("label train first %s" % label_train[0])
