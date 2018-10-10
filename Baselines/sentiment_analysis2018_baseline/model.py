@@ -51,12 +51,13 @@ def buildRNNModel(input_dim, embedding_weights):   # input dim in general is voc
     output_dim = 300 
 
     model = Sequential()
-    model.add(Embedding(input_dim, output_dim, weights=[embedding_weights]))
+    model.add(Embedding(input_dim, output_dim, weights=[embedding_weights], trainable = False))
     model.add(LSTM(128))
     model.add(Dropout(0.5))
     model.add(Dense(3))
     model.add(Activation('softmax'))
 
+    # model.layers[1].trainnable = False
     model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
     logger.info(model.summary())

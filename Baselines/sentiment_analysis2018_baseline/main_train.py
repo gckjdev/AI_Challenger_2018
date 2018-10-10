@@ -25,24 +25,38 @@ if __name__ == '__main__':
     parser.add_argument('-mn', '--model_name', type=str, nargs='?',
                         help='the name of model')
 
+    parser.add_argument('-lc', '--load_cache', type=bool, nargs='?',
+                        help='load cache or not')
+
+    parser.add_argument('-t', '--test', type=bool, nargs='?',
+                        help='load cache or not')
+
     args = parser.parse_args()
     model_name = args.model_name
     if not model_name:
         model_name = "model_dict.pkl"
 
+    load_cache = args.load_cache
+    if args.load_cache is None:
+        load_cache = True
+
+    is_test = args.test
+    if args.test is None:
+        test = True
+
 #    read_word2vec.read_vectors(config.word2vec_path, 10000)  # total 1292679
 
-    contents = [u"人生就是这样子", u"人不可无志气", u"不可不要", u"美好的生活", u"人无完人", u"大众点评"]
-    m, w, v, s = sentences_to_indices(contents)
-    print("max len ", m)
-    print(w, v)
-    print(s)
+    # contents = [u"人生就是这样子", u"人不可无志气", u"不可不要", u"美好的生活", u"人无完人", u"大众点评"]
+    # m, w, v, s = sentences_to_indices(contents)
+    # print("max len ", m)
+    # print(w, v)
+    # print(s)
 
-    a = np.array(s)
-    print("save ", a)
-    np.save("a.npy", a)
-    b = np.load("a.npy")
-    print("load ", b)
+    # a = np.array(s)
+    # print("save ", a)
+    # np.save("a.npy", a)
+    # b = np.load("a.npy")
+    # print("load ", b)
 
     # vocab = v # { u"你好" : 0, u"朋友" : 1, u"人" : 2 , u"年":3, u"一个":4}
     # embedding_matrix = get_embeding_weights(vocab, config.word2vec_path, 1000000)
@@ -51,9 +65,8 @@ if __name__ == '__main__':
 
     # load train data
     logger.info("start load data")
-    traing_num = 1000
-    validate_num = 100
-    validate_num = 100
+    traing_num = is_test ? 1000 : None
+    validate_num = is_test ? 100 : None
     train_data_df = load_data_from_csv(config.train_data_path, nrow=traing_num)
     validate_data_df = load_data_from_csv(config.validate_data_path, nrow=validate_num)
 
@@ -61,10 +74,11 @@ if __name__ == '__main__':
     content_train = train_data_df.iloc[:, 1]
 
     logger.info("start seg sentences to vector")
-    # max_len, word, vocab, sequences = sentences_to_indices(content_train)
-    # save_data(vocab, "vocab.npy")
-    # save_data(word, "word.npy")
-    # save_data(sequences, "seq.npy")
+    if not load_cache:
+        max_len, word, vocab, sequences = sentences_to_indices(content_train)
+        save_data(vocab, "vocab.npy")
+        save_data(word, "word.npy")
+        save_data(sequences, "seq.npy")
 
     max_len = 1317
     word = load_data("word.npy").tolist()
@@ -76,8 +90,9 @@ if __name__ == '__main__':
     logger.info("max len %d" % max_len)
     logger.info("sequence len %d" % len(sequences))
 
-    # embedding_matrix = get_embeding_weights(vocab, config.word2vec_path, 0)
-    # save_data(embedding_matrix, "emb.npy")
+    if not load_cache:
+        embedding_matrix = get_embeding_weights(vocab, config.word2vec_path, 0)
+        save_data(embedding_matrix, "emb.npy")
     embedding_matrix = load_data("emb.npy")
     print(embedding_matrix[0])
 
