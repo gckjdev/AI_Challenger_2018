@@ -29,6 +29,9 @@ if __name__ == '__main__':
     parser.add_argument('-lc', '--load_cache', type=int, nargs='?',
                         help='load cache or not')
 
+    parser.add_argument('-lm', '--load_model', type=int, nargs='?',
+                        help='load model or not')
+
     parser.add_argument('-t', '--test', type=int, nargs='?',
                         help='test mode or not')
 
@@ -42,6 +45,12 @@ if __name__ == '__main__':
         load_cache = True
     else:
         load_cache = False if args.load_cache == 0 else True
+
+    is_load_model = True
+    if args.load_model is None:
+        is_load_model = True
+    else:
+        is_load_model = False if args.load_model == 0 else True
 
     is_test = True
     if args.test is None:
@@ -116,7 +125,7 @@ if __name__ == '__main__':
     columns = train_data_df.columns.values.tolist()
     # logger.info(columns)
 
-    NUM_CLASS = 3
+    NUM_CLASS = 4
 
     # use RNN to train and predict
     rnn_model_dict = dict()
@@ -131,7 +140,7 @@ if __name__ == '__main__':
         model = buildRNNModel(data_process.VOCAB_NUMBER, embedding_matrix)
 
         weights_name = column + ".h5"
-        if is_test:
+        if is_load_model:
             load_rnn_model(model, weights_name)
         else:
             trainRNNModel(model, content_train, label_train, weights_name)
