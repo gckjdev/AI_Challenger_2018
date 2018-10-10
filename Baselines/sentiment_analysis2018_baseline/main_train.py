@@ -65,8 +65,8 @@ if __name__ == '__main__':
 
     # load train data
     logger.info("start load data")
-    traing_num = is_test ? 1000 : None
-    validate_num = is_test ? 100 : None
+    traing_num = 1000 if is_test else None
+    validate_num = 100 if is_test else None
     train_data_df = load_data_from_csv(config.train_data_path, nrow=traing_num)
     validate_data_df = load_data_from_csv(config.validate_data_path, nrow=validate_num)
 
@@ -103,7 +103,7 @@ if __name__ == '__main__':
 
     # get column names
     columns = train_data_df.columns.values.tolist()
-    logger.info(columns)
+    # logger.info(columns)
 
     # use RNN to train and predict
     rnn_model_dict = dict()
