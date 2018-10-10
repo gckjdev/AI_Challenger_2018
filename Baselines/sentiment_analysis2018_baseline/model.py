@@ -9,7 +9,7 @@ import logging
 from keras.preprocessing import sequence
 from keras.optimizers import SGD, RMSprop, Adagrad
 from keras.utils import np_utils
-from keras.models import Sequential
+from keras.models import Sequential, load_model
 from keras.layers.core import Dense, Dropout, Activation
 from keras.layers.embeddings import Embedding
 from keras.layers.recurrent import LSTM, GRU
@@ -64,11 +64,11 @@ def buildRNNModel(input_dim, embedding_weights):   # input dim in general is voc
 
     return model
 
-def trainRNNModel(model, content, label):
+def trainRNNModel(model, content, label, name):
     logger.info("start to train....")
     train = pad_sequences(content, dtype='float32')
     model.fit(train, label, batch_size = 64, epochs = 10, verbose = 1)
-    model.save_weights('rnn.h5')
+    model.save_weights(name)
     yaml_string = model.to_yaml()
     logger.info(yaml_string)
     return model
@@ -79,3 +79,6 @@ def predictRNNModel(model, content_test, label_test):
     score = model.evaluate(X_test, label_test, batch_size = 64)
     logger.info("predict score is %d" % score)
     return score
+
+def load_rnn_model(name):
+    return load_model(name)

@@ -114,22 +114,45 @@ if __name__ == '__main__':
     columns = train_data_df.columns.values.tolist()
     # logger.info(columns)
 
+    NUM_CLASS = 3
+
     # use RNN to train and predict
     rnn_model_dict = dict()
     for column in columns[2:]:   # 逐列遍历每一个训练的标注 label
         
-        label_train = np_utils.to_categorical(train_data_df[column], num_classes=3)
+        label_train = np_utils.to_categorical(train_data_df[column], num_classes=NUM_CLASS)
         content_train = sequences
 
         model = buildRNNModel(data_process.VOCAB_NUMBER, embedding_matrix)
-        model = trainRNNModel(model, content_train, label_train)
+
+        name = column + ".h5"
+        model = trainRNNModel(model, content_train, label_train, name)
         rnn_model_dict[column] = model
+
+        if is_test:
+            break
 
     logger.info("start train feature extraction")
     vectorizer_tfidf = TfidfVectorizer(analyzer='word', ngram_range=(1, 5), min_df=5, norm='l2')
     vectorizer_tfidf.fit(content_train)
     logger.info("complete train feature extraction models")
     logger.info("vocab shape: %s" % np.shape(vectorizer_tfidf.vocabulary_.keys()))
+
+
+    # use RNN model to validate
+    content_validate = validate_data_df.iloc[:, 1]
+
+    logger.info("start RNN validate data")
+    content_validate = data_process.sentences_to_sequence(content_validate, vocab)
+    print(content_validate[0])
+    print(content_validate[1])
+
+    logger.info("start RNN validate model")
+    for column in columns[2:]:
+        label_validate = np_utils.to_categorical(validate_data_df[column], num_classes = NUM_CLASS)
+        score = predictRNNModel(rnn_model_dict[column], content_validate, label_validate)
+        if is_test:
+            break
 
     # model train
     logger.info("start train model")
