@@ -40,7 +40,7 @@ if __name__ == '__main__':
 
     # load data
     logger.info("start load data")
-    test_num = 100 if is_test else None
+    test_num = 1000 if is_test else None
     test_data_df = load_data_from_csv(config.test_data_path, nrow=test_num)
 
     # load embedding matrix
@@ -85,7 +85,8 @@ if __name__ == '__main__':
 
         # do prediction
         label_test = predict_rnn_model(rnn_model, content_test)
-        test_data_df[column] = data_process.convert_index_to_label(np.argmax(label_test, axis=0))
+        label = data_process.convert_index_to_label(np.argmax(label_test, axis=1))
+        print(label)
         print(test_data_df[column])
         if is_test:
             break
