@@ -3,7 +3,7 @@
 
 from data_process import load_data_from_csv, seg_words, get_embeding_weights, sentences_to_indices, save_data, load_data
 from data_process import convert_label_to_index, convert_index_to_label
-from model import TextClassifier, buildRNNModel, trainRNNModel, predictRNNModel, load_rnn_model
+from model import TextClassifier, build_rnn_model, trainRNNModel, predictRNNModel, load_rnn_model
 from sklearn.feature_extraction.text import TfidfVectorizer
 import config
 import logging
@@ -134,20 +134,20 @@ if __name__ == '__main__':
     columns = train_data_df.columns.values.tolist()
     # logger.info(columns)
 
-    NUM_CLASS = 4
+    
 
     # use RNN to train and predict
     rnn_model_dict = dict()
     for column in columns[2:]:   # 逐列遍历每一个训练的标注 label
         
-        label_train = np_utils.to_categorical(convert_label_to_index(train_data_df[column]), num_classes=NUM_CLASS)
+        label_train = np_utils.to_categorical(convert_label_to_index(train_data_df[column]), num_classes=data_process.NUM_CLASS)
         logger.info(label_train[:10])
         logger.info(train_data_df[column][:10])
         # logger.info(label_train[1])
 
         content_train = sequences
 
-        model = buildRNNModel(data_process.VOCAB_NUMBER, embedding_matrix, NUM_CLASS)
+        model = build_rnn_model(data_process.VOCAB_NUMBER, embedding_matrix, NUM_CLASS)
 
         weights_name = column + ".h5"
         if is_load_model:

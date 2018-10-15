@@ -66,7 +66,7 @@ class TextClassifier():
 #         self.val_precisions.append(_val_precision)
 #         return
 
-def buildRNNModel(input_dim, embedding_weights, num_class):   # input dim in general is vocab len + 1
+def build_rnn_model(input_dim, embedding_weights, num_class):   # input dim in general is vocab len + 1
 
     output_dim = 300 
 
@@ -112,6 +112,23 @@ def predictRNNModel(model, content_test, label_test):
     # score2 = f1_score(label_test.tolist(), Y_pred.tolist())
     # logger.info("acc : %s, f1 : %s" % score1, score2)
     return score
+
+def predict_rnn_model(model, content_test):
+    logger.info("start to predict....")
+    X_test = pad_sequences(content_test, dtype='float32')
+    Y_pred = model.predict(X_test, batch_size=64, verbose=1)
+    
+    # print(Y_pred)
+    # print(label_test)
+    
+    # score1 = accuracy_score(label_test.tolist(), Y_pred.tolist())
+    # score2 = f1_score(label_test.tolist(), Y_pred.tolist())
+    # logger.info("acc : %s, f1 : %s" % score1, score2)
+    # score = model.evaluate(X_test, label_test, batch_size = 64)
+    # logger.info("predict score is %s" % score)
+    # print(score)
+    return Y_pred
+
 
 def load_rnn_model(model, name):
     logger.info("load model weights %s" % name)

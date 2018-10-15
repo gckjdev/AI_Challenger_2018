@@ -19,6 +19,7 @@ PADDING_WORD_INDEX = 0
 UNKNOWN_WORD_INDEX = 1
 
 VOCAB_NUMBER = 20000    # TODO to be adjust
+NUM_CLASS = 4
 
 # 加载数据
 def load_data_from_csv(file_name, header=0, encoding="utf-8", nrow=None):
@@ -162,4 +163,3 @@ def save_data(data, name):
 def load_data(name):
     logger.info("load %s", name)
     return np.load(name)
-    
