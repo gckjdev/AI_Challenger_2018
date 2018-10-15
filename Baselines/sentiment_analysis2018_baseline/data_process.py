@@ -43,7 +43,7 @@ def convert_label_to_index(labels):
     return labels + 2
 
 def convert_index_to_label(index):
-    return labels - 2
+    return index - 2
 
 # 分词并且生词词库及其索引
 def sentences_to_indices(contents):

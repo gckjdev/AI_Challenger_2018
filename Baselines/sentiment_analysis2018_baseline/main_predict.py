@@ -1,6 +1,7 @@
 #!/user/bin/env python
 # -*- coding:utf-8 -*-
 
+import numpy as np
 from data_process import load_data_from_csv, seg_words, get_embeding_weights, sentences_to_indices, save_data, load_data
 from data_process import convert_label_to_index, convert_index_to_label
 from model import TextClassifier, build_rnn_model, trainRNNModel, predictRNNModel, load_rnn_model, predict_rnn_model
@@ -39,7 +40,7 @@ if __name__ == '__main__':
 
     # load data
     logger.info("start load data")
-    test_num = 100 if test else None
+    test_num = 100 if is_test else None
     test_data_df = load_data_from_csv(config.test_data_path, nrow=test_num)
 
     # load embedding matrix
