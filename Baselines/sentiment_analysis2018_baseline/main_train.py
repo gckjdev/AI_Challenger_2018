@@ -172,7 +172,7 @@ if __name__ == '__main__':
 
     logger.info("start RNN validate model")
     for column in columns[2:]:
-        label_validate = np_utils.to_categorical(convert_label_to_index(validate_data_df[column]), num_classes = NUM_CLASS)
+        label_validate = np_utils.to_categorical(convert_label_to_index(validate_data_df[column]), num_classes = data_process.NUM_CLASS)
         logger.info(label_validate[:100])
         logger.info(validate_data_df[column][:100])
         # logger.info(label_validate[1])
@@ -207,41 +207,41 @@ if __name__ == '__main__':
 
     logger.info("complete train model")
 
-    # validate model
-    content_validate = validate_data_df.iloc[:, 1]
+    # # validate model
+    # content_validate = validate_data_df.iloc[:, 1]
 
-    logger.info("start seg validate data")
-    content_validate = seg_words(content_validate)
-    logger.info("complete seg validate data")
+    # logger.info("start seg validate data")
+    # content_validate = seg_words(content_validate)
+    # logger.info("complete seg validate data")
 
-    logger.info("start validate model")
-    f1_score_dict = dict()
-    for column in columns[2:]:
-        label_validate = validate_data_df[column]
+    # logger.info("start validate model")
+    # f1_score_dict = dict()
+    # for column in columns[2:]:
+    #     label_validate = validate_data_df[column]
 
-        # predict and save f1 score
-        text_classifier = classifier_dict[column]
-        f1_score = text_classifier.get_f1_score(content_validate, label_validate)
+    #     # predict and save f1 score
+    #     text_classifier = classifier_dict[column]
+    #     f1_score = text_classifier.get_f1_score(content_validate, label_validate)
 
-        f1_score_dict[column] = f1_score
+    #     f1_score_dict[column] = f1_score
 
-    # get overall f1 score
-    f1_score = np.mean(list(f1_score_dict.values()))
-    str_score = "\n"
-    for column in columns[2:]:
-        str_score = str_score + column + ":" + str(f1_score_dict[column]) + "\n"
+    # # get overall f1 score
+    # f1_score = np.mean(list(f1_score_dict.values()))
+    # str_score = "\n"
+    # for column in columns[2:]:
+    #     str_score = str_score + column + ":" + str(f1_score_dict[column]) + "\n"
 
-    logger.info("f1_scores: %s\n" % str_score)
-    logger.info("f1_score: %s" % f1_score)
-    logger.info("complete validate model")
+    # logger.info("f1_scores: %s\n" % str_score)
+    # logger.info("f1_score: %s" % f1_score)
+    # logger.info("complete validate model")
 
-    # save model
-    logger.info("start save model")
-    model_save_path = config.model_save_path
-    if not os.path.exists(model_save_path):
-        os.makedirs(model_save_path)
+    # # save model
+    # logger.info("start save model")
+    # model_save_path = config.model_save_path
+    # if not os.path.exists(model_save_path):
+    #     os.makedirs(model_save_path)
 
-    joblib.dump(classifier_dict, model_save_path + model_name)
-    logger.info("complete save model")
+    # joblib.dump(classifier_dict, model_save_path + model_name)
+    # logger.info("complete save model")
 
 
