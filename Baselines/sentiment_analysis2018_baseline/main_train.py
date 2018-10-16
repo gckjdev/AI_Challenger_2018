@@ -121,7 +121,7 @@ if __name__ == '__main__':
         save_data(embedding_matrix, "emb.npy")
         save_data(vocab, "train_vocab.npy")
     embedding_matrix = load_data("emb.npy")
-    vocab = load_data("train_vocab.npy")
+    vocab = load_data("train_vocab.npy").tolist()
     logger.info("train vocab len %s" % len(vocab))
     print(embedding_matrix[0])
     print(embedding_matrix[1])    
@@ -155,7 +155,7 @@ if __name__ == '__main__':
 
         content_train = sequences
 
-        model = build_rnn_model(data_process.VOCAB_NUMBER, embedding_matrix, NUM_CLASS)
+        model = build_rnn_model(data_process.VOCAB_NUMBER, embedding_matrix, data_process.NUM_CLASS)
 
         weights_name = column + ".h5"
         if is_load_model:
