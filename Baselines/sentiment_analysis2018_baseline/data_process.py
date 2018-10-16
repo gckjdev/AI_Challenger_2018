@@ -18,7 +18,7 @@ jieba.load_userdict(config.user_dict_path)
 PADDING_WORD_INDEX = 0
 UNKNOWN_WORD_INDEX = 1
 
-VOCAB_NUMBER = 50000    # TODO to be adjust
+VOCAB_NUMBER = 100000    # TODO to be adjust
 NUM_CLASS = 4
 
 # 加载数据
@@ -51,7 +51,7 @@ def sentences_to_indices(contents):
     vocab = {}          # 词库 to 索引
     index_word = []     # 索引 to 词
     content_sequences = [] # 
-    index = 2;          # after unknown word index and padding word index
+    index = UNKNOWN_WORD_INDEX + 1;          # after unknown word index and padding word index
     for content in contents:
         segs = jieba.lcut(content)
 
