@@ -18,7 +18,7 @@ jieba.load_userdict(config.user_dict_path)
 PADDING_WORD_INDEX = 0
 UNKNOWN_WORD_INDEX = 1
 
-VOCAB_NUMBER = 130000 # 100000    # TODO to be adjust
+VOCAB_NUMBER = 50000 # 100000    # TODO to be adjust
 NUM_CLASS = 4
 
 # 加载数据
