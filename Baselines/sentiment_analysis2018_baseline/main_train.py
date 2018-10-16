@@ -122,7 +122,7 @@ if __name__ == '__main__':
         save_data(vocab, "train_vocab.npy")
     embedding_matrix = load_data("emb.npy")
     vocab = load_data("train_vocab.npy")
-    logger.info("train vocab len %d" % len(vocab))
+    logger.info("train vocab len %s" % len(vocab))
     print(embedding_matrix[0])
     print(embedding_matrix[1])    
 
