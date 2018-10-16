@@ -21,6 +21,10 @@ UNKNOWN_WORD_INDEX = 1
 VOCAB_NUMBER = 130000 # 100000    # TODO to be adjust
 NUM_CLASS = 4
 
+def set_vocab_number(n):
+    VOCAB_NUMBER = n + 2
+    return VOCAB_NUMBER
+
 # 加载数据
 def load_data_from_csv(file_name, header=0, encoding="utf-8", nrow=None):
     logger.info("load csv " + file_name)

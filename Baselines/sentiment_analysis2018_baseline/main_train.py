@@ -123,6 +123,7 @@ if __name__ == '__main__':
     embedding_matrix = load_data("emb.npy")
     vocab = load_data("train_vocab.npy").tolist()
     logger.info("train vocab len %s" % len(vocab))
+    data_process.set_vocab_number(len(vocab))
     print(embedding_matrix[0])
     print(embedding_matrix[1])    
 
