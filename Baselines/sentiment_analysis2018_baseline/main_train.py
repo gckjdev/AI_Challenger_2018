@@ -89,10 +89,10 @@ if __name__ == '__main__':
     # print(vocab)
     # print(embedding_matrix)
 
-    # load train data
+    # load train data and validate data
     logger.info("start load data")
-    traing_num = 1000 if is_test else None
-    validate_num = 5000 if is_test else None
+    traing_num = 10000 if is_test else None
+    validate_num = 5000 if is_test else None        
     train_data_df = load_data_from_csv(config.train_data_path, nrow=traing_num)
     validate_data_df = load_data_from_csv(config.validate_data_path, nrow=validate_num)
 
@@ -101,33 +101,41 @@ if __name__ == '__main__':
     logger.info(content_train[0])
     logger.info(content_train[1])
 
-    logger.info("start seg sentences to vector")
+    logger.info("start seg train sentences to vector")
     if not load_cache:
         max_len, word, vocab, sequences = sentences_to_indices(content_train)
-        save_data(vocab, "vocab.npy")
+        save_data(vocab, "all_vocab.npy")
         save_data(word, "word.npy")
-        save_data(sequences, "seq.npy")
+        # save_data(sequences, "seq.npy")
 
-    max_len = 100000 # TODO to be changed
     word = load_data("word.npy").tolist()
-    vocab = load_data("vocab.npy").tolist()
-    sequences = load_data("seq.npy").tolist()
+    vocab = load_data("all_vocab.npy").tolist()
+    # sequences = load_data("seq.npy").tolist()
 
-    logger.info("vocab len %d" % len(vocab))
+    logger.info("all vocab len %d" % len(vocab))
     logger.info("word count %d" % len(word))
-    logger.info("max len %d" % max_len)
-    logger.info("sequence len %d" % len(sequences))
+    # logger.info("sequence len %d" % len(sequences))
 
     if not load_cache:
-        embedding_matrix = get_embeding_weights(vocab, config.word2vec_path, 0)
+        embedding_matrix, vocab = get_embeding_weights(vocab, config.word2vec_path, 0)
         save_data(embedding_matrix, "emb.npy")
+        save_data(vocab, "train_vocab.npy")
     embedding_matrix = load_data("emb.npy")
+    vocab = load_data("train_vocab.npy")
+    logger.info("train vocab len %d" % len(vocab))
     print(embedding_matrix[0])
     print(embedding_matrix[1])    
 
     logger.info("start seg train data")
     # segment sentences to words
-    content_train = seg_words(content_train)
+    # content_train = seg_words(content_train)
+    content_train = train_data_df.iloc[:, 1]
+    print(content_train[0])
+    logger.info("total %d train data" % len(content_train))
+    if not load_cache:
+        sequences = data_process.sentences_to_sequence(content_train, vocab)
+        save_data(sequences, "seq.npy")
+    sequences = load_data("seq.npy").tolist()
     logger.info("complete seg train data")    
 
     # get column names

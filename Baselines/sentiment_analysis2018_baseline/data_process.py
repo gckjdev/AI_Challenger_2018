@@ -9,7 +9,7 @@ import argparse
 import random
 import codecs
 import numpy as np
-
+from tqdm import tqdm
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] <%(processName)s> (%(threadName)s) %(message)s')
 logger = logging.getLogger(__name__)
@@ -52,21 +52,29 @@ def sentences_to_indices(contents):
     index_word = []     # 索引 to 词
     content_sequences = [] # 
     index = UNKNOWN_WORD_INDEX + 1;          # after unknown word index and padding word index
-    for content in contents:
-        segs = jieba.lcut(content)
 
-        # update max len
-        if len(segs) > max_len:
-            max_len = len(segs)
+    with tqdm(total=len(contents)) as pbar:
+        progress = 0
+        for content in contents:
+            
+            if progress % 100 == 0:
+                pbar.update(progress)
+            progress += 1
 
-        seq = []
-        for seg in segs:
-            if seg not in vocab:
-                index_word.append(seg)
-                vocab[seg] = index
-                index += 1
-            seq.append(vocab[seg])
-        content_sequences.append(np.array(seq))
+            segs = jieba.lcut(content)
+
+            # update max len
+            if len(segs) > max_len:
+                max_len = len(segs)
+
+            seq = []
+            for seg in segs:
+                if seg not in vocab:
+                    index_word.append(seg)
+                    vocab[seg] = index
+                    index += 1
+                seq.append(vocab[seg])
+            # content_sequences.append(np.array(seq))
 
     return max_len, index_word, vocab, content_sequences
 
@@ -104,9 +112,11 @@ def get_embeding_weights(vocab, path, topn):
 
     lines_num, dim = 0, 0 # dim is word dim here, 300 dim for word2vec data here
     vectors = {} # word-vector dict
+    new_vocab = {}
     iw = []  # index-word array
     wi = {}  # word-index dict
     logger.info("Word2Vec loading %s" % path)
+    index = UNKNOWN_WORD_INDEX + 1;          # after unknown word index and padding word index
     with codecs.open(path, 'r', 'utf-8') as f:
         first_line = True
         for line in f:
@@ -119,6 +129,8 @@ def get_embeding_weights(vocab, path, topn):
             if vocab.__contains__(tokens[0]):
                 # logger.info("find vector for word %s" % tokens[0])
                 vectors[tokens[0]] = np.asarray([float(x) for x in tokens[1:]])
+                new_vocab[tokens[0]] = index
+                index += 1
                 # iw.append(tokens[0])    # only add words in vocab
 
 #             if lines_num < 10:
@@ -138,6 +150,7 @@ def get_embeding_weights(vocab, path, topn):
     #    wi[w] = i
 
     logger.info("Word2Vec loading.... total %d words read" % len(vectors))
+    logger.info("new vocab len is %d" % len(new_vocab))    
 
     # return vectors, iw, wi, dim
 
@@ -146,7 +159,7 @@ def get_embeding_weights(vocab, path, topn):
     size = VOCAB_NUMBER       # 至少必须是词汇表的长度+2 , 2 = padding word / unknown word
     embedding_matrix = np.zeros((size, dim))
     ## 遍历词汇表中的每一项
-    for word,i in vocab.items():
+    for word,i in new_vocab.items():
         ## 在词向量索引字典中查询单词word的词向量
         embedding_vector=vectors.get(word)
         ## 判断查询结果，如果查询结果不为空,用该向量替换0向量矩阵中下标为i的那个向量
@@ -154,7 +167,7 @@ def get_embeding_weights(vocab, path, topn):
             # logger.info("find vector for word %s" % word)
             embedding_matrix[i]=embedding_vector
 
-    return embedding_matrix
+    return embedding_matrix, new_vocab
 
 def save_data(data, name):
     logger.info("save %s", name)
