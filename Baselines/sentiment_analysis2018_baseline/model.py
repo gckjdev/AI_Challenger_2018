@@ -102,7 +102,6 @@ def predictRNNModel(model, content_test, label_test):
     X_test = pad_sequences(content_test, dtype='float32')
     score = model.evaluate(X_test, label_test, batch_size = 64)
     logger.info("predict score is %s" % score)
-    print(score)
     # Y_pred = model.predict(X_test, batch_size=64, verbose=1)
     
     # print(Y_pred)
@@ -118,7 +117,7 @@ def predict_rnn_model(model, content_test):
     X_test = pad_sequences(content_test, dtype='float32')
     Y_pred = model.predict(X_test, batch_size=64, verbose=1)
     
-    print(Y_pred)
+    logger.info("predict done, some result here {0}".format(Y_pred[:10]))
     # print(label_test)
     
     # score1 = accuracy_score(label_test.tolist(), Y_pred.tolist())

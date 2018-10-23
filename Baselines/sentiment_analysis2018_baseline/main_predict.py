@@ -48,8 +48,8 @@ if __name__ == '__main__':
         load_cache = False if args.load_cache == 0 else True
 
     # load data
-    logger.info("start load data")
     test_num = 100 if is_test else None
+    logger.info("start load data, try read {0} records, test mode {1}".format(test_num, is_test))
     test_data_df = load_data_from_csv(config.test_data_path, nrow=test_num)
 
     # load embedding matrix
@@ -62,7 +62,7 @@ if __name__ == '__main__':
     columns = test_data_df.columns.tolist()
 
     # seg content words to sequence
-    logger.info("start seg test data")
+    logger.info("start seg test data, let's look at some data")
     logger.info(test_data_df.iloc[1, :])
     content_test = test_data_df.iloc[:, 1]
     if not load_cache:
@@ -72,7 +72,7 @@ if __name__ == '__main__':
     else:
         content_test = load_data("test_seq.npy").tolist()
 
-    logger.info("complete seg test data")
+    logger.info("complete seg test data, total %s records" % len(content_test))
 
 
     # # load model
@@ -99,10 +99,11 @@ if __name__ == '__main__':
         # do prediction
         label_test = predict_rnn_model(rnn_model, content_test)
         label = data_process.convert_index_to_label(np.argmax(label_test, axis=1))
-        print(label[:1000])
-        print(len(test_data_df[column]))
-        print(len(label))
+        logger.info("predict final label {0}".format(label[:100]))
+        # print(len(test_data_df[column]))
+        # print(len(label))
         test_data_df[column] = label
+        logger.info("finish predict {0}, total {1} records".format(column, len(label)))
         if is_test:
             break
 
