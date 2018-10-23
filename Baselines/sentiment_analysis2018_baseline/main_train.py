@@ -171,7 +171,7 @@ if __name__ == '__main__':
     # use RNN model to validate
     content_validate = validate_data_df.iloc[:, 1]
 
-    logger.info("start RNN validate data")
+    logger.info("load RNN validate data sentences...")
     content_validate = data_process.sentences_to_sequence(content_validate, vocab)
     print(validate_data_df.iloc[:, 1][0])
     print(validate_data_df.iloc[:, 1][1])
@@ -179,40 +179,40 @@ if __name__ == '__main__':
     print(content_validate[1])
 
 
-    logger.info("start RNN validate model")
     for column in columns[2:]:
+        logger.info("start RNN validate model for %s" % column)
         label_validate = np_utils.to_categorical(convert_label_to_index(validate_data_df[column]), num_classes = data_process.NUM_CLASS)
-        logger.info(label_validate[:100])
-        logger.info(validate_data_df[column][:100])
+        logger.info(label_validate[:10])
+        logger.info(validate_data_df[column][:10])
         # logger.info(label_validate[1])
         score = predictRNNModel(rnn_model_dict[column], content_validate, label_validate)
         if is_test:
             break
 
-    logger.info("start train feature extraction")
-    vectorizer_tfidf = TfidfVectorizer(analyzer='word', ngram_range=(1, 5), min_df=5, norm='l2')
-    vectorizer_tfidf.fit(content_train)
-    logger.info("complete train feature extraction models")
-    logger.info("vocab shape: %s" % np.shape(vectorizer_tfidf.vocabulary_.keys()))
+    # logger.info("start train feature extraction")
+    # vectorizer_tfidf = TfidfVectorizer(analyzer='word', ngram_range=(1, 5), min_df=5, norm='l2')
+    # vectorizer_tfidf.fit(content_train)
+    # logger.info("complete train feature extraction models")
+    # logger.info("vocab shape: %s" % np.shape(vectorizer_tfidf.vocabulary_.keys()))
 
 
 
 
-    # model train
-    logger.info("start train model")
-    classifier_dict = dict()
-    for column in columns[2:]:   # 逐列遍历每一个训练的标注 label
-        label_train = train_data_df[column]
-        logger.info("content train first %s" % content_train[0])
-        logger.info("label train first %s" % label_train[0])
-        text_classifier = TextClassifier(vectorizer=vectorizer_tfidf)
-        logger.info("start train %s model" % column)
-        text_classifier.fit(content_train, label_train)
-        logger.info("complete train %s model" % column)
-        classifier_dict[column] = text_classifier
-        if is_test:
-            logger.info("test, only run once")
-            break
+    # # model train
+    # logger.info("start train model")
+    # classifier_dict = dict()
+    # for column in columns[2:]:   # 逐列遍历每一个训练的标注 label
+    #     label_train = train_data_df[column]
+    #     logger.info("content train first %s" % content_train[0])
+    #     logger.info("label train first %s" % label_train[0])
+    #     text_classifier = TextClassifier(vectorizer=vectorizer_tfidf)
+    #     logger.info("start train %s model" % column)
+    #     text_classifier.fit(content_train, label_train)
+    #     logger.info("complete train %s model" % column)
+    #     classifier_dict[column] = text_classifier
+    #     if is_test:
+    #         logger.info("test, only run once")
+    #         break
 
     logger.info("complete train model")
 
