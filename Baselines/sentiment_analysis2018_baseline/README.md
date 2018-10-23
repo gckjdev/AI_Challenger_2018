@@ -23,5 +23,5 @@ AI Challenger Sentiment Analysis Baseline
 ---
 * 配置 在config.py中配置好文件存储路径
 * 训练 运行nohup python main_train.py -mn model1 & 训练模型并保存，同时通过日志可以得到验证集的F1_score指标
-* 预测 运行nohup python main_predict.py -mn your_model_name $ 通过加载上一步的模型，在测试集上做预测
+* 预测 运行nohup python main_predict.py -mn model1 -lc 1 -t 0 $ 通过加载上一步的模型，在测试集上做预测
 

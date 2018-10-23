@@ -26,6 +26,9 @@ if __name__ == '__main__':
     parser.add_argument('-t', '--test', type=int, nargs='?',
                         help='test mode or not')
 
+    parser.add_argument('-lc', '--load_cache', type=int, nargs='?',
+                        help='load cache or not')
+
     args = parser.parse_args()
     model_name = args.model_name
     if not model_name:
@@ -38,15 +41,19 @@ if __name__ == '__main__':
     else:
         is_test = False if args.test == 0 else True
 
+    load_cache = True
+    if args.load_cache is None:
+        load_cache = True
+    else:
+        load_cache = False if args.load_cache == 0 else True
+
     # load data
     logger.info("start load data")
-    test_num = 1000 if is_test else None
+    test_num = 100 if is_test else None
     test_data_df = load_data_from_csv(config.test_data_path, nrow=test_num)
 
     # load embedding matrix
-    embedding_matrix = load_data("emb.npy")
-
-    
+    embedding_matrix = load_data("emb.npy")   
 
     # load vocab
     vocab = load_data("vocab.npy").tolist()
@@ -58,7 +65,13 @@ if __name__ == '__main__':
     logger.info("start seg test data")
     logger.info(test_data_df.iloc[1, :])
     content_test = test_data_df.iloc[:, 1]
-    content_test = data_process.sentences_to_sequence(content_test, vocab)
+    if not load_cache:
+        sequences = data_process.sentences_to_sequence(content_test, vocab)
+        save_data(sequences, "test_seq.npy")
+        content_test = sequences
+    else:
+        content_test = load_data("test_seq.npy").tolist()
+
     logger.info("complete seg test data")
 
 
@@ -86,12 +99,14 @@ if __name__ == '__main__':
         # do prediction
         label_test = predict_rnn_model(rnn_model, content_test)
         label = data_process.convert_index_to_label(np.argmax(label_test, axis=1))
-        print(label)
-        print(test_data_df[column])
+        print(label[:1000])
+        print(len(test_data_df[column]))
+        print(len(label))
+        test_data_df[column] = label
         if is_test:
             break
 
-        # test_data_df[column] = classifier_dict[column].predict(content_test)
+        # test_data_df[column] label_test].predict(content_test)
         logger.info("compete %s predict" % column)
 
     test_data_df.to_csv(config.test_data_predict_out_path, encoding="utf_8_sig", index=False)
