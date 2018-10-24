@@ -19,7 +19,7 @@ from keras.utils import np_utils
 logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] <%(processName)s> (%(threadName)s) %(message)s')
 logger = logging.getLogger(__name__)
 
-def do_validation(validate_data_df):
+def do_validation(validate_data_df, columns, vocab, embedding_matrix):
     
     # use RNN model to validate
     content_validate = validate_data_df.iloc[:, 1]
@@ -31,6 +31,7 @@ def do_validation(validate_data_df):
     print(content_validate[0])
     print(content_validate[1])
 
+    rnn_model_dict = {}
     for column in columns[2:]:
         logger.info("start rnn validate model for %s" % column)
 
@@ -44,3 +45,4 @@ def do_validation(validate_data_df):
         logger.info(validate_data_df[column][:10])
         # logger.info(label_validate[1])
         score = predictRNNModel(rnn_model_dict[column], content_validate, label_validate)
+        logger.info("predict {0}, score is {1}".format(column, score))

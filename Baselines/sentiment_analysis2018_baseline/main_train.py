@@ -154,7 +154,7 @@ if __name__ == '__main__':
     # logger.info(columns)
 
     if validate_only:
-        do_validation(validate_data_df)
+        do_validation(validate_data_df, columns, vocab, embedding_matrix)
         sys.exit()
     
 
