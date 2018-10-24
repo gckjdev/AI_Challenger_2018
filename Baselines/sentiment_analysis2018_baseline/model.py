@@ -70,11 +70,13 @@ class TextClassifier():
 def build_rnn_model(input_dim, embedding_weights, num_class):   # input dim in general is vocab len + 1
 
     output_dim = 300 
+    # max_input_length = 1024
 
     model = Sequential()
     model.add(Embedding(input_dim, output_dim, weights=[embedding_weights], trainable = False))
-    model.add(LSTM(128))
+    model.add(LSTM(32))
     # model.add(Dropout(0.5))
+    model.add(Dense(256))
     model.add(Dense(num_class))
     model.add(Activation('softmax'))
 
