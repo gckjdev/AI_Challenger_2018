@@ -16,6 +16,9 @@ import sys
 import data_process
 from keras.utils import np_utils
 
+logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] <%(processName)s> (%(threadName)s) %(message)s')
+logger = logging.getLogger(__name__)
+
 def do_validation(validate_data_df):
     
     # use RNN model to validate
