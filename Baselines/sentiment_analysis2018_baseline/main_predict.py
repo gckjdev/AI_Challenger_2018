@@ -116,7 +116,7 @@ if __name__ == '__main__':
     logger.info("compete predict test data")
 
     if not is_test:
-        return
+        sys.exit()
 
     validate_num = 100 if is_test else None        
     validate_data_df = load_data_from_csv(config.validate_data_path, nrow=validate_num)
