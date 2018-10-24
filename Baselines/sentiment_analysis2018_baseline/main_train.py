@@ -154,7 +154,7 @@ if __name__ == '__main__':
 
     if validate_only:
         do_validation(validate_data_df)
-        return
+        sys.exit()
     
 
     # use RNN to train and predict
