@@ -87,6 +87,8 @@ if __name__ == '__main__':
     # content_test = seg_words(content_test)
     # logger.info("complete seg test data")
 
+    rnn_model_dict = {}
+
     # model predict
     logger.info("start predict test data")
     for column in columns[2:]:
@@ -94,7 +96,7 @@ if __name__ == '__main__':
         # build rnn model and load weights
         rnn_model = build_rnn_model(data_process.VOCAB_NUMBER, embedding_matrix, data_process.NUM_CLASS)
         weights_name = column + ".h5"
-        load_rnn_model(rnn_model, weights_name)
+        rnn_model_dict[column] = load_rnn_model(rnn_model, weights_name)        
 
         # do prediction
         label_test = predict_rnn_model(rnn_model, content_test)
@@ -112,6 +114,30 @@ if __name__ == '__main__':
 
     test_data_df.to_csv(config.test_data_predict_out_path, encoding="utf_8_sig", index=False)
     logger.info("compete predict test data")
+
+    if not is_test:
+        return
+
+    validate_num = 100 if is_test else None        
+    validate_data_df = load_data_from_csv(config.validate_data_path, nrow=validate_num)
+
+    content_validate = validate_data_df.iloc[:, 1]
+
+    logger.info("load rnn validate data sentences...")
+    content_validate = data_process.sentences_to_sequence(content_validate, vocab)
+
+    for column in columns[2:]:
+        logger.info("start rnn validate model for %s" % column)
+        label_validate = np_utils.to_categorical(convert_label_to_index(validate_data_df[column]), num_classes = data_process.NUM_CLASS)
+        logger.info(label_validate[:10])
+        logger.info(validate_data_df[column][:10])
+        # logger.info(label_validate[1])
+        score = predictRNNModel(rnn_model_dict[column], content_validate, label_validate)
+        if is_test:
+            break
+
+    # validate_data_df.to_csv(config.validate_data_predict_out_path, encoding="utf_8_sig", index=False)
+    logger.info("compete predict validate data")
 
 # [[0.7519077  ,0.01429716, 0.95730718, 0.216488  ],[0.79128194, 0.81153971, 0.0151668,  0.18201146],[0.773996,   0.01413795, 0.01790877, 0.19395727],[0.79605305, 0.01185339, 0.01566614, 0.17642745]]
 

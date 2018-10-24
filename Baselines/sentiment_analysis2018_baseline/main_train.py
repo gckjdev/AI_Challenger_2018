@@ -37,7 +37,10 @@ if __name__ == '__main__':
                         help='test mode or not')
 
     parser.add_argument('-e', '--epochs', type=int, nargs='?',
-                        help='train epochs')                       
+                        help='train epochs') 
+
+    parser.add_argument('-vo', '--validate_only', type=int, nargs='?',
+                        help='execute validation')                       
 
     args = parser.parse_args()
     model_name = args.model_name
@@ -61,6 +64,12 @@ if __name__ == '__main__':
         is_test = True
     else:
         is_test = False if args.test == 0 else True
+
+    validate_only = False
+    if args.validate_only is None:
+        validate_only = False
+    else:
+        validate_only = False if args.validate_only == 0 else True
 
     epochs = args.epochs
     if epochs is None:
@@ -143,6 +152,9 @@ if __name__ == '__main__':
     columns = train_data_df.columns.values.tolist()
     # logger.info(columns)
 
+    if validate_only:
+        do_validation(validate_data_df)
+        return
     
 
     # use RNN to train and predict
@@ -253,4 +265,28 @@ if __name__ == '__main__':
     # joblib.dump(classifier_dict, model_save_path + model_name)
     # logger.info("complete save model")
 
+def do_validation(validate_data_df):
+    
+    # use RNN model to validate
+    content_validate = validate_data_df.iloc[:, 1]
 
+    logger.info("load RNN validate data sentences...")
+    content_validate = data_process.sentences_to_sequence(content_validate, vocab)
+    print(validate_data_df.iloc[:, 1][0])
+    print(validate_data_df.iloc[:, 1][1])
+    print(content_validate[0])
+    print(content_validate[1])
+
+    for column in columns[2:]:
+        logger.info("start rnn validate model for %s" % column)
+
+        # build rnn model and load weights
+        rnn_model = build_rnn_model(data_process.VOCAB_NUMBER, embedding_matrix, data_process.NUM_CLASS)
+        weights_name = column + ".h5"
+        rnn_model_dict[column] = load_rnn_model(rnn_model, weights_name)        
+
+        label_validate = np_utils.to_categorical(convert_label_to_index(validate_data_df[column]), num_classes = data_process.NUM_CLASS)
+        logger.info(label_validate[:10])
+        logger.info(validate_data_df[column][:10])
+        # logger.info(label_validate[1])
+        score = predictRNNModel(rnn_model_dict[column], content_validate, label_validate)

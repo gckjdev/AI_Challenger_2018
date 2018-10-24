@@ -78,7 +78,7 @@ def build_rnn_model(input_dim, embedding_weights, num_class):   # input dim in g
     model.add(Activation('softmax'))
 
     # model.layers[1].trainnable = False
-    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy', f1, recall, precision])
+    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy']) # , f1, recall, precision])
 
     logger.info(model.summary())
 
@@ -131,7 +131,8 @@ def predict_rnn_model(model, content_test):
 
 def load_rnn_model(model, name):
     logger.info("load model weights %s" % name)
-    return model.load_weights(name)
+    model.load_weights(name)
+    return model
 
 def mcor(y_true, y_pred):
      # matthews_correlation
