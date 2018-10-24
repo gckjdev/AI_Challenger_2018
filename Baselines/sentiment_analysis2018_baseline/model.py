@@ -21,7 +21,7 @@ from sklearn.metrics import accuracy_score,f1_score,roc_auc_score,recall_score,p
 logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] <%(processName)s> (%(threadName)s) %(message)s')
 logger = logging.getLogger(__name__)
 
-BATCH_SIZE = 200000
+BATCH_SIZE = 1024 # 200000
 
 class TextClassifier():
 
@@ -74,7 +74,7 @@ def build_rnn_model(input_dim, embedding_weights, num_class):   # input dim in g
     model = Sequential()
     model.add(Embedding(input_dim, output_dim, weights=[embedding_weights], trainable = False))
     model.add(LSTM(128))
-    model.add(Dropout(0.5))
+    # model.add(Dropout(0.5))
     model.add(Dense(num_class))
     model.add(Activation('softmax'))
 
