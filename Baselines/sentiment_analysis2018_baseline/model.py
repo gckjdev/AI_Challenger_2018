@@ -21,6 +21,7 @@ from sklearn.metrics import accuracy_score,f1_score,roc_auc_score,recall_score,p
 logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] <%(processName)s> (%(threadName)s) %(message)s')
 logger = logging.getLogger(__name__)
 
+BATCH_SIZE = 200000
 
 class TextClassifier():
 
@@ -78,7 +79,7 @@ def build_rnn_model(input_dim, embedding_weights, num_class):   # input dim in g
     model.add(Activation('softmax'))
 
     # model.layers[1].trainnable = False
-    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy']) # , f1, recall, precision])
+    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=[f1]) # , f1, recall, precision])
 
     logger.info(model.summary())
 
@@ -90,7 +91,7 @@ def trainRNNModel(model, content, label, name, epochs):
 
     logger.info("start to train....")
     train = pad_sequences(content, dtype='float32')
-    model.fit(train, label, batch_size = 64, epochs = epochs, verbose = 1)       # epochs to be optimized
+    model.fit(train, label, batch_size = BATCH_SIZE, epochs = epochs, verbose = 1)       # epochs to be optimized
     model.save_weights(name)
     yaml_string = model.to_yaml()
     logger.info(yaml_string)
@@ -100,7 +101,7 @@ def trainRNNModel(model, content, label, name, epochs):
 def predictRNNModel(model, content_test, label_test):
     logger.info("start to predict....")
     X_test = pad_sequences(content_test, dtype='float32')
-    score = model.evaluate(X_test, label_test, batch_size = 64)
+    score = model.evaluate(X_test, label_test, batch_size = BATCH_SIZE)
     logger.info("predict score is %s" % score)
     # Y_pred = model.predict(X_test, batch_size=64, verbose=1)
     
@@ -115,7 +116,7 @@ def predictRNNModel(model, content_test, label_test):
 def predict_rnn_model(model, content_test):
     logger.info("start to predict....")
     X_test = pad_sequences(content_test, dtype='float32')
-    Y_pred = model.predict(X_test, batch_size=64, verbose=1)
+    Y_pred = model.predict(X_test, batch_size=BATCH_SIZE, verbose=1)
     
     logger.info("predict done, some result here {0}".format(Y_pred[:10]))
     # print(label_test)
